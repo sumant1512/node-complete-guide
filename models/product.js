@@ -2,10 +2,10 @@ const fs = require("fs");
 const path = require("path");
 
 const rootDir = require("../util/path");
-const p = path.join(rootDir, "data", "products.json");
+const pathToDb = path.join(rootDir, "data", "products.json");
 
 const getProductsFromFile = (cb) => {
-  fs.readFile(p, (err, fileContent) => {
+  fs.readFile(pathToDb, (err, fileContent) => {
     if (err) {
       return cb([]);
     } else {
@@ -16,13 +16,14 @@ const getProductsFromFile = (cb) => {
 
 module.exports = class Product {
   constructor(t) {
-    this.title = t;
+    this.productDetails = t;
   }
 
   save() {
+    this.id = Math.random().toString();
     getProductsFromFile((products) => {
       products.push(this);
-      fs.writeFile(p, JSON.stringify(products), (err) => {
+      fs.writeFile(pathToDb, JSON.stringify(products), (err) => {
         console.log("Write File error while saving", err);
       });
     });
@@ -31,5 +32,13 @@ module.exports = class Product {
   // static is used here to call this method directly on class itself
   static fetchAll(cb) {
     getProductsFromFile(cb);
+  }
+
+  // fetch product by Id
+  static findProductbyId(productId, cb) {
+    getProductsFromFile((products) => {
+      const product = products.filter((product) => product.id === productId);
+      cb(product);
+    });
   }
 };

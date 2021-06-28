@@ -4,6 +4,7 @@ const path = require("path");
 // third party packages
 const express = require("express");
 const bodyParser = require("body-parser");
+var cors = require("cors");
 
 // local imports
 const admin = require("./routes/admin");
@@ -13,6 +14,8 @@ const rootDir = require("./util/path");
 
 const app = express();
 
+app.use(cors());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
